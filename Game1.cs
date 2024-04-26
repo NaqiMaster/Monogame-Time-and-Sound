@@ -7,6 +7,7 @@ namespace Monogame_Time_and_Sound
 {
     public class Game1 : Game
     {
+        //Naqi Master
         SoundEffect explode;
         MouseState mouseState;
         float seconds;
