@@ -8,11 +8,12 @@ namespace Monogame_Time_and_Sound
     public class Game1 : Game
     {
         //Naqi Master
+        bool explosion;
         SoundEffect explode;
         MouseState mouseState;
         float seconds;
         SpriteFont timeFont;
-        Texture2D bomb;
+        Texture2D bomb, exploded;
         Rectangle bombRec;
 
         private GraphicsDeviceManager _graphics;
@@ -35,6 +36,7 @@ namespace Monogame_Time_and_Sound
          
             
             bombRec = new Rectangle(50, 50, 700, 400);
+            explosion = false;
 
             seconds = 0;
             // TODO: Add your initialization logic here
@@ -50,6 +52,7 @@ namespace Monogame_Time_and_Sound
             timeFont = Content.Load<SpriteFont>("Time");
             bomb = Content.Load<Texture2D>("bomb");
             explode = Content.Load<SoundEffect>("explosion");
+            exploded = Content.Load<Texture2D>("Exploded");
         }
 
         protected override void Update(GameTime gameTime)
@@ -71,6 +74,10 @@ namespace Monogame_Time_and_Sound
             {
                 explode.Play();
                 seconds = 0f;
+                explosion = true;
+                bombRec = new Rectangle(0, 0, 800, 500);
+
+
             }
 
             base.Update(gameTime);
@@ -82,8 +89,17 @@ namespace Monogame_Time_and_Sound
 
             _spriteBatch.Begin();
 
-            _spriteBatch.Draw(bomb, bombRec, Color.White);
-            _spriteBatch.DrawString(timeFont, (15 - seconds).ToString("00.0"), new Vector2(270, 200), Color.Black);
+            if (explosion == true)
+            {
+                _spriteBatch.Draw(exploded, bombRec, Color.White);
+
+            }
+            else
+            {
+                _spriteBatch.Draw(bomb, bombRec, Color.White);
+                _spriteBatch.DrawString(timeFont, (15 - seconds).ToString("00.0"), new Vector2(270, 200), Color.Black);
+            }
+
 
             _spriteBatch.End();
             // TODO: Add your drawing code here
