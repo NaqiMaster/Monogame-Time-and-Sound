@@ -10,11 +10,12 @@ namespace Monogame_Time_and_Sound
         //Naqi Master
         bool explosion;
         SoundEffect explode;
+        SoundEffectInstance explodeInstance;
         MouseState mouseState;
         float seconds;
-        SpriteFont timeFont;
+        SpriteFont timeFont, wireText,defuseText;
         Texture2D bomb, exploded;
-        Rectangle bombRec;
+        Rectangle bombRec, wires;
 
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
@@ -33,8 +34,8 @@ namespace Monogame_Time_and_Sound
             _graphics.ApplyChanges();
 
             this.Window.Title = "Time & Sound";
-         
-            
+
+            wires = new Rectangle(480, 160, 300, 100);
             bombRec = new Rectangle(50, 50, 700, 400);
             explosion = false;
 
@@ -52,14 +53,30 @@ namespace Monogame_Time_and_Sound
             timeFont = Content.Load<SpriteFont>("Time");
             bomb = Content.Load<Texture2D>("bomb");
             explode = Content.Load<SoundEffect>("explosion");
+            explodeInstance = explode.CreateInstance();
             exploded = Content.Load<Texture2D>("Exploded");
+            wireText = Content.Load<SpriteFont>("Wires");
+
         }
 
         protected override void Update(GameTime gameTime)
         {
             mouseState = Mouse.GetState();
             if (mouseState.LeftButton == ButtonState.Pressed)
-                seconds = 0f;
+            {
+                if (wires.Contains(mouseState.X, mouseState.Y))
+                {
+                    //Defused
+                    Exit();
+                }
+                else if (bombRec.Contains(mouseState.X, mouseState.Y))
+                {
+                    //Reset timer
+                    seconds = 0f;
+                }
+
+            }
+
 
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
@@ -72,12 +89,17 @@ namespace Monogame_Time_and_Sound
 
             if (seconds >= 15)
             {
-                explode.Play();
+                explodeInstance.Play();
                 seconds = 0f;
                 explosion = true;
                 bombRec = new Rectangle(0, 0, 800, 500);
 
 
+            }
+
+            if (explodeInstance.State == SoundState.Stopped && explosion == true)
+            {
+                this.Exit();
             }
 
             base.Update(gameTime);
@@ -98,6 +120,8 @@ namespace Monogame_Time_and_Sound
             {
                 _spriteBatch.Draw(bomb, bombRec, Color.White);
                 _spriteBatch.DrawString(timeFont, (15 - seconds).ToString("00.0"), new Vector2(270, 200), Color.Black);
+                _spriteBatch.DrawString(wireText,"Find a way to defuse and exit the program!",new Vector2(100,12),Color.Black);
+                _spriteBatch.Draw(bomb, wires, Color.White * 0);
             }
 
 
