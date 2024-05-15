@@ -69,11 +69,6 @@ namespace Monogame_Time_and_Sound
                     //Defused
                     Exit();
                 }
-                else if (bombRec.Contains(mouseState.X, mouseState.Y))
-                {
-                    //Reset timer
-                    seconds = 0f;
-                }
 
             }
 
